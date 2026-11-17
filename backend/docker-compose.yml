@@ -1,0 +1,52 @@
+# Local development.
+#   docker compose up -d db                 just Postgres (run the Python processes with uv)
+#   docker compose --profile app up --build  everything in containers
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: sosuv
+      POSTGRES_PASSWORD: sosuv
+      POSTGRES_DB: sosuv
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sosuv"]
+      interval: 5s
+      retries: 10
+
+  api:
+    profiles: [app]
+    build: { context: ., dockerfile: docker/Dockerfile }
+    command: ["sh", "-c", "alembic upgrade head && sosuv-api"]
+    env_file: [.env]
+    environment:
+      SOSUV_DATABASE_URL: postgresql+asyncpg://sosuv:sosuv@db:5432/sosuv
+      SOSUV_ENV: prod
+    ports: ["8000:8000"]
+    volumes: [files:/app/data/files]
+    depends_on: { db: { condition: service_healthy } }
+
+  scheduler:
+    profiles: [app]
+    build: { context: ., dockerfile: docker/Dockerfile }
+    command: ["sosuv-scheduler"]
+    env_file: [.env]
+    environment:
+      SOSUV_DATABASE_URL: postgresql+asyncpg://sosuv:sosuv@db:5432/sosuv
+    depends_on: [api]
+
+  worker:
+    profiles: [app]
+    build: { context: ., dockerfile: docker/Dockerfile }
+    command: ["sosuv-worker"]
+    env_file: [.env]
+    environment:
+      SOSUV_DATABASE_URL: postgresql+asyncpg://sosuv:sosuv@db:5432/sosuv
+    volumes: [files:/app/data/files]
+    depends_on: [api]
+    deploy: { replicas: 2 }
+
+volumes:
+  pgdata:
+  files:

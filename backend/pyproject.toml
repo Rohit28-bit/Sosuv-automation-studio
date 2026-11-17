@@ -1,0 +1,107 @@
+[project]
+name = "sosuv"
+version = "0.1.0"
+description = "Sosuv Automation Studio - backend (API, scheduler, workers, node plugins)"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+    "sqlalchemy[asyncio]>=2.0.36",
+    "asyncpg>=0.30",
+    "alembic>=1.14",
+    "structlog>=24.4",
+    "httpx>=0.28",
+    "jinja2>=3.1",
+    "cryptography>=43",
+    "prometheus-client>=0.21",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "ruff>=0.8",
+    "mypy>=1.13",
+    "import-linter>=2.1",
+]
+
+# The three processes. Same code, scaled separately.
+[project.scripts]
+sosuv-api = "sosuv.entrypoints:run_api"
+sosuv-scheduler = "sosuv.entrypoints:run_scheduler"
+sosuv-worker = "sosuv.entrypoints:run_worker"
+
+# External node packages register here, e.g. in another package's pyproject:
+#   [project.entry-points."sosuv.nodes"]
+#   acme = "acme_sosuv_nodes"        # a module that defines @register_node classes
+[project.entry-points."sosuv.nodes"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/sosuv"]
+
+# ---------------------------------------------------------------- tooling
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "ASYNC", "RUF"]
+# Generic[...] kept on purpose: BaseNode reads its settings/output models from __orig_bases__.
+ignore = ["UP046", "UP047"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["ASYNC240"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+plugins = ["pydantic.mypy"]
+mypy_path = "src"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+# Architecture rules, checked in CI with `uv run lint-imports`.
+[tool.importlinter]
+root_package = "sosuv"
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "Layers: api -> services -> models/db (never upwards)"
+type = "layers"
+layers = [
+    "sosuv.api",
+    "sosuv.services",
+    "sosuv.models",
+    "sosuv.db",
+]
+
+[[tool.importlinter.contracts]]
+name = "Node plugins only use the node SDK, never the database, API or engine"
+type = "forbidden"
+source_modules = ["sosuv.nodes"]
+forbidden_modules = [
+    "sosuv.api",
+    "sosuv.services",
+    "sosuv.models",
+    "sosuv.db",
+    "sosuv.engine",
+    "sosuv.scheduling",
+]
+
+[[tool.importlinter.contracts]]
+name = "Domain is pure (no I/O layers)"
+type = "forbidden"
+source_modules = ["sosuv.domain"]
+forbidden_modules = ["sosuv.api", "sosuv.services", "sosuv.models", "sosuv.db", "sosuv.engine", "fastapi", "sqlalchemy"]

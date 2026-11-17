@@ -1,0 +1,103 @@
+@import 'tailwindcss';
+@import '@xyflow/react/dist/style.css';
+
+:root {
+  --sosuv-bg: #18191e;
+  --sosuv-sidebar: #1f2128;
+  --sosuv-surface: #252831;
+  --sosuv-surface-elevated: #2d303b;
+  --sosuv-border: #343846;
+  --sosuv-accent: #3d6ccc;
+  --sosuv-accent-hover: #2f5cb8;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--sosuv-bg);
+  color: #e4e6eb;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom sleek scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #363a47;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4b5063;
+}
+
+/* React Flow canvas styling */
+.react-flow__edge-path {
+  stroke: #646c80;
+  stroke-width: 2;
+  transition: stroke 0.15s ease;
+}
+
+.react-flow__edge:hover .react-flow__edge-path {
+  stroke: #94a3b8;
+}
+
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: #3d6ccc;
+  stroke-width: 2.5;
+}
+
+.react-flow__controls {
+  background: #252831 !important;
+  border: 1px solid #343846 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
+  overflow: hidden;
+}
+
+.react-flow__controls-button {
+  background: #252831 !important;
+  border-bottom: 1px solid #343846 !important;
+  fill: #a1a7b5 !important;
+  width: 30px !important;
+  height: 30px !important;
+}
+
+.react-flow__controls-button:hover {
+  background: #2f333f !important;
+  fill: #ffffff !important;
+}
+
+.react-flow__controls-button:last-child {
+  border-bottom: none !important;
+}
+
+.react-flow__minimap {
+  background: #1f2128 !important;
+  border: 1px solid #343846 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
+}
+
+.react-flow__handle {
+  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.react-flow__handle:hover {
+  transform: scale(1.25);
+  background-color: #3d6ccc !important;
+  border-color: #ffffff !important;
+}

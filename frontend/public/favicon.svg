@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="ff-bg" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ff6d5a" />
+      <stop offset="55%" stop-color="#f97316" />
+      <stop offset="100%" stop-color="#ec4899" />
+    </linearGradient>
+    <linearGradient id="ff-shine" x1="16" y1="12" x2="48" y2="52" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.28" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+  <!-- Rounded hexagonal shield -->
+  <rect x="4" y="4" width="56" height="56" rx="16" fill="url(#ff-bg)" />
+  <rect x="4" y="4" width="56" height="56" rx="16" fill="url(#ff-shine)" />
+  <!-- Unique forged geometric F + kinetic spark mark -->
+  <path
+    d="M21 19.5C21 18.1193 22.1193 17 23.5 17H43.5C44.8807 17 46 18.1193 46 19.5C46 20.8807 44.8807 22 43.5 22H27V29.5H39C40.3807 29.5 41.5 30.6193 41.5 32C41.5 33.3807 40.3807 34.5 39 34.5H27V44.5C27 45.8807 25.8807 47 24.5 47C23.1193 47 22 45.8807 22 44.5L21 19.5Z"
+    fill="#ffffff"
+  />
+  <!-- Kinetic diamond spark -->
+  <path
+    d="M42.5 37L45.5 41.5L42.5 46L39.5 41.5L42.5 37Z"
+    fill="#ffffff"
+    fill-opacity="0.92"
+  />
+</svg>
+
